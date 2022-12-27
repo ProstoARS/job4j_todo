@@ -19,6 +19,7 @@ import java.time.LocalDate;
 public class Task {
     @Id
     private int id;
+    private String name;
     private String description;
     private LocalDate created;
     private boolean done;
