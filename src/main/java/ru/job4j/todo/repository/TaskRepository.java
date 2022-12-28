@@ -1,33 +1,42 @@
 package ru.job4j.todo.repository;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 @AllArgsConstructor
-@Slf4j
 public class TaskRepository {
+
+    private static final Logger LOG = LogManager.getLogger(TaskRepository.class);
 
     private final SessionFactory sf;
 
     public Task addTask(Task task) {
         Session session = sf.openSession();
+        Task newTask = Task.builder()
+                .name(task.getName())
+                .description(task.getDescription())
+                .created(LocalDateTime.now())
+                .done(false)
+                .build();
         try {
             session.beginTransaction();
-            session.save(task);
+            session.save(newTask);
             session.getTransaction().commit();
-            log.info("Задача: {} добавлена в сессии: {}", task, session);
+            LOG.info("Задача: {} добавлена в сессии: {}", newTask, session);
             session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("Задача {} не была добавлена", task, e);
+            LOG.error("Задача {} не была добавлена", task, e);
         }
-        return task;
+        return newTask;
     }
 
     public Task upgradeTask(Task task) {
@@ -36,11 +45,11 @@ public class TaskRepository {
             session.beginTransaction();
             session.update(task);
             session.getTransaction().commit();
-            log.info("Задача: {} обновлена в сессии: {}", task, session);
+            LOG.info("Задача: {} обновлена в сессии: {}", task, session);
             session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("Задача {} не была обновлена", task, e);
+            LOG.error("Задача {} не была обновлена", task, e);
         }
         return task;
     }
@@ -54,11 +63,11 @@ public class TaskRepository {
                     .setParameter("fId", task.getId())
                     .executeUpdate();
             session.getTransaction().commit();
-            log.info("Задача: {} была удалёна в сессии: {}", task, session);
+            LOG.info("Задача: {} была удалёна в сессии: {}", task, session);
             session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("Ошибка удаления задачи {}", task, e);
+            LOG.error("Ошибка удаления задачи {}", task, e);
             return false;
         }
         return true;

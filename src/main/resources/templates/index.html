@@ -34,14 +34,14 @@
         </div>
     </div>
 </nav>
-<div class="row">
+<div class="row pl-5 pr-5 pt-2">
     <table class="table">
         <thead>
         <tr>
             <th scope="col">#</th>
             <th scope="col">Задача</th>
             <th scope="col">Время размещения</th>
-            <th scope="col">Выполнена</th>
+            <th scope="col">Статус</th>
         </tr>
         </thead>
         <tbody>
@@ -49,7 +49,7 @@
                 <td th:text="${task.id}">
                 <td th:text="${task.name}">
                 <td th:text="${task.created}">
-                <td th:text="${task.done}">
+                <td th:text="${task.done} ? 'Выполнена' : 'Новая'">
         </tbody>
     </table>
 </div>
