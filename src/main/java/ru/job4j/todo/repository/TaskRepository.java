@@ -86,4 +86,12 @@ public class TaskRepository {
                     .getResultList();
         }
     }
+
+    public Task findById(int id) {
+        try (Session session = sf.openSession()) {
+            return session.createQuery("from Task where id = :tId", Task.class)
+                    .setParameter("tId", id)
+                    .uniqueResult();
+        }
+    }
 }

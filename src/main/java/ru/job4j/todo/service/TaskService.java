@@ -32,4 +32,8 @@ public class TaskService {
     public List<Task> findConditionTasks(Boolean check) {
         return taskRepository.findConditionTasks(check);
     }
+
+    public Task findById(int id) {
+        return taskRepository.findById(id);
+    }
 }

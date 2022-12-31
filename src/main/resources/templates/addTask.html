@@ -18,19 +18,21 @@
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
 
-    <title>ToDo</title>
+    <title>TODO</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">ToDo</a>
+    <a class="navbar-brand" href="#">TODO</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
             aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="#">Главная <span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link" th:href="@{/formAddTask}">Добавить задание</a>
+            <a class="nav-item nav-link active" th:href="@{/index}">Все задачи</a>
+            <a class="nav-item nav-link" th:href="@{/allNewTask}">Новые задачи</a>
+            <a class="nav-item nav-link" th:href="@{/allDoneTask}">Выпоненные задачи</a>
+            <a class="nav-item nav-link active" href="#">Добавить задание<span class="sr-only">(current)</span></a>
         </div>
     </div>
 </nav>
@@ -40,15 +42,17 @@
             Новое задание.
         </div>
         <form th:action="@{/createTask}" method="POST">
-            <div class="form-group pl-3 pr-3 pt-2">
-                <label for="name">Имя</label>
-                <input type="text" class="form-control" name="name" id="name">
+            <div class="container-fluid text-center">
+                <div class="form-group pl-3 pr-3 pt-2">
+                    <label for="name">Название</label>
+                    <input type="text" class="form-control" name="name" id="name">
+                </div>
+                <div class="form-group pl-3 pr-3 pt-2">
+                    <label for="description" class="form-label">Описание задачи</label>
+                    <textarea class="form-control" name="description" id="description"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
             </div>
-            <div class="form-group pl-3 pr-3 pt-2">
-                <label for="description">Описание вакансии</label>
-                <input type="text" class="form-control" name="description" id="description">
-            </div>
-            <button type="submit" class="btn btn-primary">Сохранить</button>
         </form>
     </div>
 </div>

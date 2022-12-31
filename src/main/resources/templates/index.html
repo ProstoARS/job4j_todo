@@ -17,19 +17,24 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 
     <title>ToDo</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">ToDo</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" th:href="@{/index}">TODO</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="collapse navbar-collapse" id="navbarNav">
         <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="#">Главная <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="#">Все задачи<span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" th:href="@{/allNewTask}">Новые задачи</a>
+            <a class="nav-item nav-link" th:href="@{/allDoneTask}">Выпоненные задачи</a>
             <a class="nav-item nav-link" th:href="@{/formAddTask}">Добавить задание</a>
         </div>
     </div>
@@ -45,11 +50,15 @@
         </tr>
         </thead>
         <tbody>
-            <tr th:each="task: ${tasks}">
-                <td th:text="${task.id}">
-                <td th:text="${task.name}">
-                <td th:text="${task.created}">
-                <td th:text="${task.done} ? 'Выполнена' : 'Новая'">
+        <tr th:each="task: ${tasks}">
+            <td th:text="${task.id}">
+            <td>
+                <a th:href="@{|/taskDescription/${task.getId()}|}">
+                    <i class="fa fa-edit"></i>
+                </a>
+                <span th:text="${task.name}"></span>
+            <td th:text="${task.created}">
+            <td th:text="${task.done} ? 'Выполнена' : 'Новая'">
         </tbody>
     </table>
 </div>

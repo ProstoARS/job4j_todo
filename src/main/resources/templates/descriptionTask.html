@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+          integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+          integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <title th:text="|Задача ID (${task.getId()})|"></title>
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" th:href="@{/index}">TODO</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" th:href="@{/index}">Все задачи</a>
+        <a class="nav-item nav-link" th:href="@{/allNewTask}">Новые задачи</a>
+        <a class="nav-item nav-link" th:href="@{/allDoneTask}">Выпоненные задачи</a>
+        <a class="nav-item nav-link" th:href="@{/formAddTask}">Добавить задание</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid text-center">
+  <div class="card">
+    <div class="card-header">
+      <p th:text="|Задача ID: ${task.getId()}|"></p>
+    </div>
+    <div class="card-body">
+      <form class="form-floating" id="inputDisabled" th:object="${task}">
+        <label>
+          <input type="number" hidden th:field="*{id}" name="id"/>
+        </label>
+        <label>
+          <input type="datetime-local" hidden th:field="*{created}" name="created"/>
+        </label>
+        <div class="mb-3">
+          <br>
+          <label for="name" class="form-label">Задача</label>
+          <input class="form-control" th:field="*{name}" id="name" disabled="disabled">
+          <br>
+          <label for="description" class="form-label">Описание</label>
+          <textarea class="form-control" disabled rows="5" th:field="*{description}" name="description" id="description"></textarea>
+<!--          <br>-->
+<!--          <label for="isDone" class="form-check-label">Статус</label>-->
+<!--          <input class="form-check-input" disabled type="checkbox" th:field="*{done}" name="done" id="isDone">-->
+<!--          <br>-->
+        </div>
+      </form>
+<!--      <div class="card">-->
+<!--        <div class="btn-group" role="group" aria-label="Basic outlined example" style="margin: 20px">-->
+<!--          <form class="btn-group" th:method="POST" th:action="@{|/executeTask/${thisTask.getId()}|}" style="width: 100%">-->
+<!--            <button class="btn btn-success" role="button">Выполнить</button>-->
+<!--          </form>-->
+
+<!--          <form class="btn-group" th:method="POST" th:action="@{|/deleteTask/${thisTask.getId()}|}" style="width: 100%">-->
+<!--            <button class="btn btn-danger" role="button">Удалить</button>-->
+<!--          </form>-->
+
+<!--          <form class="btn-group" th:method="GET" th:action="@{|/editTask/${thisTask.getId()}|}" style="width: 100%">-->
+<!--            <button class="btn btn-secondary" role="button">Редактировать</button>-->
+<!--          </form>-->
+<!--        </div>-->
+<!--      </div>-->
+    </div>
+  </div>
+</div>
+</body>
+</html>
