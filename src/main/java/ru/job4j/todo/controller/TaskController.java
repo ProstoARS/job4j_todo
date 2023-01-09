@@ -51,4 +51,30 @@ public class TaskController {
         model.addAttribute("doneTasks", taskService.findConditionTasks(true));
         return "doneTaskList";
     }
+
+    @PostMapping("/executeTask/{taskId}")
+    public String executeTask(@PathVariable("taskId") int id) {
+        Task task = taskService.findById(id);
+        task.setDone(true);
+        taskService.upgradeTask(task);
+        return "redirect:/index";
+    }
+
+    @PostMapping("/deleteTask/{taskId}")
+    public String deleteTask(@PathVariable("taskId") int id) {
+        taskService.deleteTask(taskService.findById(id));
+        return "redirect:/index";
+    }
+
+    @GetMapping("/editTask/{taskId}")
+    public String editTask(@PathVariable("taskId") int id, Model model) {
+        model.addAttribute("task", taskService.findById(id));
+        return "updateTask";
+    }
+
+    @PostMapping("/updateTask")
+    public String updateTask(@ModelAttribute Task task) {
+        taskService.upgradeTask(task);
+        return "redirect:/index";
+    }
 }

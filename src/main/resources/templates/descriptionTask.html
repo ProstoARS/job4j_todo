@@ -60,21 +60,21 @@
 <!--          <br>-->
         </div>
       </form>
-<!--      <div class="card">-->
-<!--        <div class="btn-group" role="group" aria-label="Basic outlined example" style="margin: 20px">-->
-<!--          <form class="btn-group" th:method="POST" th:action="@{|/executeTask/${thisTask.getId()}|}" style="width: 100%">-->
-<!--            <button class="btn btn-success" role="button">Выполнить</button>-->
-<!--          </form>-->
+      <div class="card">
+        <div class="btn-group" role="group" aria-label="Basic outlined example" style="margin: 20px">
+          <form class="btn-group" th:method="POST" th:action="@{|/executeTask/${task.getId()}|}" style="width: 100%">
+            <button class="btn btn-success" role="button">Выполнить</button>
+          </form>
 
-<!--          <form class="btn-group" th:method="POST" th:action="@{|/deleteTask/${thisTask.getId()}|}" style="width: 100%">-->
-<!--            <button class="btn btn-danger" role="button">Удалить</button>-->
-<!--          </form>-->
+          <form class="btn-group" th:method="POST" th:action="@{|/deleteTask/${task.getId()}|}" style="width: 100%">
+            <button class="btn btn-danger" role="button">Удалить</button>
+          </form>
 
-<!--          <form class="btn-group" th:method="GET" th:action="@{|/editTask/${thisTask.getId()}|}" style="width: 100%">-->
-<!--            <button class="btn btn-secondary" role="button">Редактировать</button>-->
-<!--          </form>-->
-<!--        </div>-->
-<!--      </div>-->
+          <form class="btn-group" th:method="GET" th:action="@{|/editTask/${task.getId()}|}" style="width: 100%">
+            <button class="btn btn-secondary" role="button">Редактировать</button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </div>
