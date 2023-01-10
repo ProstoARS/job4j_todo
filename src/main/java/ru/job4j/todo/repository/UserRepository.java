@@ -8,6 +8,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.User;
 
+import java.util.Optional;
+
 @Repository
 @AllArgsConstructor
 public class UserRepository {
@@ -16,7 +18,7 @@ public class UserRepository {
 
     private final SessionFactory sf;
 
-    public User addUser(User user) {
+    public Optional<User> addUser(User user) {
         Session session = sf.openSession();
         User newUser = User.builder()
                 .name(user.getName())
@@ -33,15 +35,16 @@ public class UserRepository {
             session.getTransaction().rollback();
             LOG.error("Ошибка добавления пользователя: {} ", newUser);
         }
-        return newUser;
+        return Optional.of(newUser);
     }
 
-    public User findByLoginAndPassword(String login, String password) {
+    public Optional<User> findByLoginAndPassword(String login, String password) {
         Session session = sf.openSession();
-        return session.createQuery("FROM User WHERE login = :tLogin and password = :tPassword", User.class)
+        User user = session.createQuery("FROM User WHERE login = :tLogin and password = :tPassword", User.class)
                 .setParameter("tLogin", login)
                 .setParameter("tPassword", password)
                 .uniqueResult();
+        return Optional.of(user);
     }
 
 }
