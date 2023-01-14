@@ -18,22 +18,29 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" th:href="@{/index}">TODO</a>
+    <a class="navbar-brand" th:href="@{/tasks/index}">TODO</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <div class="navbar-nav">
-        <a class="nav-item nav-link" th:href="@{/index}">Все задачи</a>
-        <a class="nav-item nav-link" th:href="@{/allNewTask}">Новые задачи</a>
-        <a class="nav-item nav-link" th:href="@{/allDoneTask}">Выпоненные задачи</a>
-        <a class="nav-item nav-link" th:href="@{/formAddTask}">Добавить задание</a>
+        <a class="nav-item nav-link" th:href="@{/tasks/index}">Все задачи</a>
+        <a class="nav-item nav-link" th:href="@{/tasks/allNew}">Новые задачи</a>
+        <a class="nav-item nav-link" th:href="@{/tasks/allDone}">Выпоненные задачи</a>
+        <a class="nav-item nav-link" th:href="@{/tasks/formAdd}">Добавить задание</a>
+        <a class="nav-item nav-link" th:if="${user.name == 'Гость'}" th:href="@{/loginPage}">
+          <span th:text="${user.name}"></span>
+          <span> | Войти</span>
+        </a>
+        <a class="nav-item nav-link" th:if="${user.name != 'Гость'}" th:href="@{/logout}">
+          <span th:text="${user.name}"></span>
+          <span> | Выйти</span>
+        </a>
       </div>
     </div>
   </div>
 </nav>
-
 <div class="container-fluid text-center">
   <div class="card">
     <div class="card-header">
@@ -41,12 +48,6 @@
     </div>
     <div class="card-body">
       <form class="form-floating" id="inputDisabled" th:object="${task}">
-        <label>
-          <input type="number" hidden th:field="*{id}" name="id"/>
-        </label>
-        <label>
-          <input type="datetime-local" hidden th:field="*{created}" name="created"/>
-        </label>
         <div class="mb-3">
           <br>
           <label for="name" class="form-label">Задача</label>
@@ -54,23 +55,23 @@
           <br>
           <label for="description" class="form-label">Описание</label>
           <textarea class="form-control" disabled rows="5" th:field="*{description}" name="description" id="description"></textarea>
-<!--          <br>-->
-<!--          <label for="isDone" class="form-check-label">Статус</label>-->
-<!--          <input class="form-check-input" disabled type="checkbox" th:field="*{done}" name="done" id="isDone">-->
-<!--          <br>-->
+          <br>
+          <label for="isDone" class="form-check-label">Статус</label>
+          <input class="form-check-input" disabled type="checkbox" th:field="*{done}" name="done" id="isDone">
+          <br>
         </div>
       </form>
       <div class="card">
         <div class="btn-group" role="group" aria-label="Basic outlined example" style="margin: 20px">
-          <form class="btn-group" th:method="POST" th:action="@{|/executeTask/${task.getId()}|}" style="width: 100%">
+          <form class="btn-group" th:method="POST" th:action="@{|/tasks/execute/${task.getId()}|}" style="width: 100%">
             <button class="btn btn-success" role="button">Выполнить</button>
           </form>
 
-          <form class="btn-group" th:method="POST" th:action="@{|/deleteTask/${task.getId()}|}" style="width: 100%">
+          <form class="btn-group" th:method="POST" th:action="@{|/tasks/delete/${task.getId()}|}" style="width: 100%">
             <button class="btn btn-danger" role="button">Удалить</button>
           </form>
 
-          <form class="btn-group" th:method="GET" th:action="@{|/editTask/${task.getId()}|}" style="width: 100%">
+          <form class="btn-group" th:method="GET" th:action="@{|/tasks/edit/${task.getId()}|}" style="width: 100%">
             <button class="btn btn-secondary" role="button">Редактировать</button>
           </form>
         </div>

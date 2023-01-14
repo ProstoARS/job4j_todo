@@ -6,6 +6,7 @@ import ru.job4j.todo.model.Task;
 import ru.job4j.todo.repository.TaskRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -13,11 +14,11 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
 
-    public Task addTask(Task task) {
+    public Optional<Task> addTask(Task task) {
         return taskRepository.addTask(task);
     }
 
-    public Task upgradeTask(Task task) {
+    public Optional<Task> upgradeTask(Task task) {
         return taskRepository.upgradeTask(task);
     }
 
@@ -33,7 +34,11 @@ public class TaskService {
         return taskRepository.findConditionTasks(check);
     }
 
-    public Task findById(int id) {
+    public Optional<Task> findById(int id) {
         return taskRepository.findById(id);
+    }
+
+    public Optional<Task> executeTask(int id) {
+        return taskRepository.executeTask(id);
     }
 }

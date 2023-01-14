@@ -19,8 +19,6 @@
           crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
   <title>ToDo</title>
 </head>
 <body>
@@ -32,10 +30,18 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <div class="navbar-nav">
-      <a class="nav-item nav-link" th:href="@{/index}">Все задачи</a>
+      <a class="nav-item nav-link" th:href="@{/tasks/index}">Все задачи</a>
       <a class="nav-item nav-link active" href="#">Новые задачи<span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" th:href="@{/allDoneTask}">Выпоненные задачи</a>
-      <a class="nav-item nav-link" th:href="@{/formAddTask}">Добавить задание</a>
+      <a class="nav-item nav-link" th:href="@{/tasks/allDone}">Выпоненные задачи</a>
+      <a class="nav-item nav-link" th:href="@{/tasks/formAdd}">Добавить задание</a>
+      <a class="nav-item nav-link" th:if="${user.name == 'Гость'}" th:href="@{/loginPage}">
+        <span th:text="${user.name}"></span>
+        <span> | Войти</span>
+      </a>
+      <a class="nav-item nav-link" th:if="${user.name != 'Гость'}" th:href="@{/logout}">
+        <span th:text="${user.name}"></span>
+        <span> | Выйти</span>
+      </a>
     </div>
   </div>
 </nav>
@@ -53,7 +59,7 @@
     <tr th:each="task: ${newTasks}">
       <td th:text="${task.id}">
       <td>
-        <a th:href="@{|/taskDescription/${task.getId()}|}">
+        <a th:href="@{|/tasks/description/${task.getId()}|}">
           <i class="fa fa-edit"></i>
         </a>
         <span th:text="${task.name}"></span>

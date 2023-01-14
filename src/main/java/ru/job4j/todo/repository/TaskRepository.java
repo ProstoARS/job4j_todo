@@ -7,8 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
@@ -18,28 +18,22 @@ public class TaskRepository {
 
     private final SessionFactory sf;
 
-    public Task addTask(Task task) {
+    public Optional<Task> addTask(Task task) {
         Session session = sf.openSession();
-        Task newTask = Task.builder()
-                .name(task.getName())
-                .description(task.getDescription())
-                .created(LocalDateTime.now())
-                .done(false)
-                .build();
         try {
             session.beginTransaction();
-            session.save(newTask);
+            session.save(task);
             session.getTransaction().commit();
-            LOG.info("Задача: {} добавлена в сессии: {}", newTask, session);
+            LOG.info("Задача: {} добавлена в сессии: {}", task, session);
             session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
             LOG.error("Задача {} не была добавлена", task, e);
         }
-        return newTask;
+        return Optional.of(task);
     }
 
-    public Task upgradeTask(Task task) {
+    public Optional<Task> upgradeTask(Task task) {
         Session session = sf.openSession();
         try {
             session.beginTransaction();
@@ -51,10 +45,10 @@ public class TaskRepository {
             session.getTransaction().rollback();
             LOG.error("Задача {} не была обновлена", task, e);
         }
-        return task;
+        return Optional.of(task);
     }
 
-    public Boolean deleteTask(Task task) {
+    public boolean deleteTask(Task task) {
         Session session = sf.openSession();
         try {
             session.beginTransaction();
@@ -79,7 +73,7 @@ public class TaskRepository {
         }
     }
 
-    public List<Task> findConditionTasks(Boolean check) {
+    public List<Task> findConditionTasks(boolean check) {
         try (Session session = sf.openSession()) {
             return session.createQuery("from Task where done = :isDone", Task.class)
                     .setParameter("isDone", check)
@@ -87,11 +81,21 @@ public class TaskRepository {
         }
     }
 
-    public Task findById(int id) {
+    public Optional<Task> findById(int id) {
         try (Session session = sf.openSession()) {
-            return session.createQuery("from Task where id = :tId", Task.class)
+            return Optional.of(session.createQuery("from Task where id = :tId", Task.class)
                     .setParameter("tId", id)
-                    .uniqueResult();
+                    .uniqueResult());
         }
+    }
+
+    public Optional<Task> executeTask(int id) {
+        Optional<Task> taskFromDB = findById(id);
+        if (taskFromDB.isPresent()) {
+            Task task = taskFromDB.get();
+            task.setDone(true);
+            return upgradeTask(task);
+        }
+        return Optional.empty();
     }
 }

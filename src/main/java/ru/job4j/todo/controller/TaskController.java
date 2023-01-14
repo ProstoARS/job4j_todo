@@ -3,78 +3,99 @@ package ru.job4j.todo.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.service.TaskService;
+import ru.job4j.todo.util.SessionUser;
+
+import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Controller
+@RequestMapping("/tasks")
 public class TaskController {
 
     private final TaskService taskService;
 
     @GetMapping("/index")
-    public String index(Model model) {
+    public String index(Model model, HttpSession session) {
+        model.addAttribute("user", SessionUser.getSessionUser(session));
         model.addAttribute("tasks", taskService.findAll());
-        return "index";
+        return "task/index";
     }
 
-    @GetMapping("/formAddTask")
-    public String addTask(Model model) {
+    @GetMapping("/formAdd")
+    public String addTask(Model model, HttpSession session) {
+        model.addAttribute("user", SessionUser.getSessionUser(session));
         model.addAttribute("task", new Task());
-        return "addTask";
+        return "task/add";
     }
 
-    @PostMapping("/createTask")
+    @PostMapping("/create")
     public String createTask(@ModelAttribute Task task) {
         taskService.addTask(task);
-        return "redirect:/index";
+        return "redirect:/tasks/index";
     }
 
-    @GetMapping("/taskDescription/{taskId}")
-    public String taskDescription(Model model, @PathVariable("taskId") int id) {
-        model.addAttribute("task", taskService.findById(id));
-        return "descriptionTask";
+    @GetMapping("/description/{id}")
+    public String descriptionTask(Model model, @PathVariable("id") int id, HttpSession session) {
+        model.addAttribute("user", SessionUser.getSessionUser(session));
+        Optional<Task> task = taskService.findById(id);
+        if (task.isEmpty()) {
+            return "redirect:/tasks/fail";
+        }
+        model.addAttribute("task", task.get());
+        return "task/description";
     }
 
-    @GetMapping("/allNewTask")
-    public String newTasks(Model model) {
+    @GetMapping("/allNew")
+    public String newTasks(Model model, HttpSession session) {
+        model.addAttribute("user", SessionUser.getSessionUser(session));
         model.addAttribute("newTasks", taskService.findConditionTasks(false));
-        return "newTaskList";
+        return "task/newList";
     }
 
-    @GetMapping("/allDoneTask")
-    public String doneTasks(Model model) {
+    @GetMapping("/allDone")
+    public String doneTasks(Model model, HttpSession session) {
+        model.addAttribute("user", SessionUser.getSessionUser(session));
         model.addAttribute("doneTasks", taskService.findConditionTasks(true));
-        return "doneTaskList";
+        return "task/doneList";
     }
 
-    @PostMapping("/executeTask/{taskId}")
-    public String executeTask(@PathVariable("taskId") int id) {
-        Task task = taskService.findById(id);
-        task.setDone(true);
-        taskService.upgradeTask(task);
-        return "redirect:/index";
+    @PostMapping("/execute/{id}")
+    public String executeTask(@PathVariable("id") int id) {
+        Optional<Task> taskFromDB = taskService.executeTask(id);
+        if (taskFromDB.isEmpty()) {
+            return "redirect:/tasks/fail";
+        }
+        return "redirect:/tasks/index";
     }
 
-    @PostMapping("/deleteTask/{taskId}")
-    public String deleteTask(@PathVariable("taskId") int id) {
-        taskService.deleteTask(taskService.findById(id));
-        return "redirect:/index";
+    @PostMapping("/delete/{id}")
+    public String deleteTask(@PathVariable("id") int id) {
+        Optional<Task> taskFromDB = taskService.findById(id);
+        if (taskFromDB.isEmpty()) {
+            return "redirect:/tasks/fail";
+        }
+        Task task = taskFromDB.get();
+        taskService.deleteTask(task);
+        return "redirect:/tasks/index";
     }
 
-    @GetMapping("/editTask/{taskId}")
-    public String editTask(@PathVariable("taskId") int id, Model model) {
+    @GetMapping("/edit/{id}")
+    public String editTask(@PathVariable("id") int id, Model model, HttpSession session) {
+        model.addAttribute("user", SessionUser.getSessionUser(session));
         model.addAttribute("task", taskService.findById(id));
-        return "updateTask";
+        return "task/update";
     }
 
-    @PostMapping("/updateTask")
+    @PostMapping("/update")
     public String updateTask(@ModelAttribute Task task) {
-        taskService.upgradeTask(task);
-        return "redirect:/index";
+        Optional<Task> taskFromDb = taskService.upgradeTask(task);
+        if (taskFromDb.isEmpty()) {
+            return "redirect:/tasks/fail";
+        }
+        return "redirect:/tasks/index";
     }
 }

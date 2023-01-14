@@ -29,10 +29,18 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link active" th:href="@{/index}">Все задачи</a>
-            <a class="nav-item nav-link" th:href="@{/allNewTask}">Новые задачи</a>
-            <a class="nav-item nav-link" th:href="@{/allDoneTask}">Выпоненные задачи</a>
+            <a class="nav-item nav-link active" th:href="@{/tasks/index}">Все задачи</a>
+            <a class="nav-item nav-link" th:href="@{/tasks/allNew}">Новые задачи</a>
+            <a class="nav-item nav-link" th:href="@{/tasks/allDone}">Выпоненные задачи</a>
             <a class="nav-item nav-link active" href="#">Добавить задание<span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" th:if="${user.name == 'Гость'}" th:href="@{/loginPage}">
+                <span th:text="${user.name}"></span>
+                <span> | Войти</span>
+            </a>
+            <a class="nav-item nav-link" th:if="${user.name != 'Гость'}" th:href="@{/logout}">
+                <span th:text="${user.name}"></span>
+                <span> | Выйти</span>
+            </a>
         </div>
     </div>
 </nav>
@@ -41,7 +49,7 @@
         <div class="card-header">
             Новое задание.
         </div>
-        <form th:action="@{/createTask}" method="POST">
+        <form th:action="@{/tasks/create}" method="POST">
             <div class="container-fluid text-center">
                 <div class="form-group pl-3 pr-3 pt-2">
                     <label for="name">Название</label>
