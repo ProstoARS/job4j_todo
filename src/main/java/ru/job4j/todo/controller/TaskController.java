@@ -65,8 +65,7 @@ public class TaskController {
 
     @PostMapping("/execute/{id}")
     public String executeTask(@PathVariable("id") int id) {
-        Optional<Task> taskFromDB = taskService.executeTask(id);
-        if (taskFromDB.isEmpty()) {
+        if (!taskService.executeTask(id)) {
             return "redirect:/tasks/fail";
         }
         return "redirect:/tasks/index";
@@ -74,12 +73,9 @@ public class TaskController {
 
     @PostMapping("/delete/{id}")
     public String deleteTask(@PathVariable("id") int id) {
-        Optional<Task> taskFromDB = taskService.findById(id);
-        if (taskFromDB.isEmpty()) {
+        if (!taskService.deleteTask(id)) {
             return "redirect:/tasks/fail";
         }
-        Task task = taskFromDB.get();
-        taskService.deleteTask(task);
         return "redirect:/tasks/index";
     }
 

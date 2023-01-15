@@ -22,8 +22,8 @@ public class TaskService {
         return taskRepository.upgradeTask(task);
     }
 
-    public Boolean deleteTask(Task task) {
-        return taskRepository.deleteTask(task);
+    public Boolean deleteTask(int id) {
+        return taskRepository.deleteTask(id);
     }
 
     public List<Task> findAll() {
@@ -38,7 +38,7 @@ public class TaskService {
         return taskRepository.findById(id);
     }
 
-    public Optional<Task> executeTask(int id) {
+    public boolean executeTask(int id) {
         return taskRepository.executeTask(id);
     }
 }

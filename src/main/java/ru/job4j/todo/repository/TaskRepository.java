@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
 import java.util.List;
@@ -29,6 +30,7 @@ public class TaskRepository {
         } catch (Exception e) {
             session.getTransaction().rollback();
             LOG.error("Задача {} не была добавлена", task, e);
+            return Optional.empty();
         }
         return Optional.of(task);
     }
@@ -44,27 +46,28 @@ public class TaskRepository {
         } catch (Exception e) {
             session.getTransaction().rollback();
             LOG.error("Задача {} не была обновлена", task, e);
+            return Optional.empty();
         }
         return Optional.of(task);
     }
 
-    public boolean deleteTask(Task task) {
+    public boolean deleteTask(int id) {
         Session session = sf.openSession();
+        int executeUpdate = 0;
         try {
             session.beginTransaction();
-            session.createQuery(
+            executeUpdate = session.createQuery(
                             "DELETE Task WHERE id = :fId")
-                    .setParameter("fId", task.getId())
+                    .setParameter("fId", id)
                     .executeUpdate();
             session.getTransaction().commit();
-            LOG.info("Задача: {} была удалёна в сессии: {}", task, session);
+            LOG.info("Задача id={} была удалёна в сессии: {}", id, session);
             session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            LOG.error("Ошибка удаления задачи {}", task, e);
-            return false;
+            LOG.error("Ошибка удаления задачи id={}", id, e);
         }
-        return true;
+        return executeUpdate > 0;
     }
 
     public List<Task> findAll() {
@@ -89,13 +92,22 @@ public class TaskRepository {
         }
     }
 
-    public Optional<Task> executeTask(int id) {
-        Optional<Task> taskFromDB = findById(id);
-        if (taskFromDB.isPresent()) {
-            Task task = taskFromDB.get();
-            task.setDone(true);
-            return upgradeTask(task);
+    public boolean executeTask(int id) {
+        Session session = sf.openSession();
+        int executeUpdate = 0;
+        try {
+            Transaction transaction = session.beginTransaction();
+             executeUpdate = session.createQuery("update Task set done = :tDone where id = :tId")
+                    .setParameter("tDone", true)
+                    .setParameter("tId", id)
+                    .executeUpdate();
+            transaction.commit();
+            LOG.info("Задача под id={} успешно обновлена как выполненная в сессии {}", id, session);
+            session.close();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            LOG.error("Обновление задачи под id={} как выполненная не произошло", id, e);
         }
-        return Optional.empty();
+        return executeUpdate > 0;
     }
 }
