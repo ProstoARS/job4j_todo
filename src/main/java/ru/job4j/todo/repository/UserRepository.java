@@ -20,31 +20,33 @@ public class UserRepository {
 
     public Optional<User> addUser(User user) {
         Session session = sf.openSession();
-        User newUser = User.builder()
-                .name(user.getName())
-                .login(user.getLogin())
-                .password(user.getPassword())
-                .build();
         try {
             session.beginTransaction();
-            session.save(newUser);
+            session.save(user);
             session.getTransaction().commit();
-            LOG.info("Пользователь: {} был добавлен в сессии: {}", newUser, session);
+            LOG.info("Пользователь: {} был добавлен в сессии: {}", user, session);
             session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            LOG.error("Ошибка добавления пользователя: {} ", newUser);
+            LOG.error("Ошибка добавления пользователя: {} в сессии: {}", user, session);
+            return Optional.empty();
         }
-        return Optional.of(newUser);
+        return Optional.of(user);
     }
 
     public Optional<User> findByLoginAndPassword(String login, String password) {
         Session session = sf.openSession();
-        User user = session.createQuery("FROM User WHERE login = :tLogin and password = :tPassword", User.class)
-                .setParameter("tLogin", login)
-                .setParameter("tPassword", password)
-                .uniqueResult();
-        return Optional.of(user);
+        try {
+            User user = session.createQuery("FROM User WHERE login = :tLogin and password = :tPassword", User.class)
+                    .setParameter("tLogin", login)
+                    .setParameter("tPassword", password)
+                    .uniqueResult();
+            LOG.info("Пользователь: {} нашелся по логину: {} и паролю: {}", user, login, password);
+            return Optional.of(user);
+        } catch (Exception e) {
+            LOG.error("Пользователь с логином: {} и паролем: {} не найден", login, password);
+            return Optional.empty();
+        }
     }
 
 }
