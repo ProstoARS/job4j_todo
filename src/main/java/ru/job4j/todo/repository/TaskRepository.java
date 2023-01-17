@@ -21,34 +21,36 @@ public class TaskRepository {
 
     public Optional<Task> addTask(Task task) {
         Session session = sf.openSession();
+        Optional<Task> rsl = Optional.empty();
         try {
             session.beginTransaction();
             session.save(task);
             session.getTransaction().commit();
             LOG.info("Задача: {} добавлена в сессии: {}", task, session);
             session.close();
+            rsl = Optional.of(task);
         } catch (Exception e) {
             session.getTransaction().rollback();
             LOG.error("Задача {} не была добавлена", task, e);
-            return Optional.empty();
         }
-        return Optional.of(task);
+        return rsl;
     }
 
     public Optional<Task> upgradeTask(Task task) {
         Session session = sf.openSession();
+        Optional<Task> rsl = Optional.empty();
         try {
             session.beginTransaction();
             session.update(task);
             session.getTransaction().commit();
             LOG.info("Задача: {} обновлена в сессии: {}", task, session);
             session.close();
+            rsl = Optional.of(task);
         } catch (Exception e) {
             session.getTransaction().rollback();
             LOG.error("Задача {} не была обновлена", task, e);
-            return Optional.empty();
         }
-        return Optional.of(task);
+        return rsl;
     }
 
     public boolean deleteTask(int id) {
@@ -86,9 +88,9 @@ public class TaskRepository {
 
     public Optional<Task> findById(int id) {
         try (Session session = sf.openSession()) {
-            return Optional.of(session.createQuery("from Task where id = :tId", Task.class)
+            return session.createQuery("from Task where id = :tId", Task.class)
                     .setParameter("tId", id)
-                    .uniqueResult());
+                    .uniqueResultOptional();
         }
     }
 

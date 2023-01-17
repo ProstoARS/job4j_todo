@@ -20,33 +20,33 @@ public class UserRepository {
 
     public Optional<User> addUser(User user) {
         Session session = sf.openSession();
+        Optional<User> rsl = Optional.empty();
         try {
             session.beginTransaction();
             session.save(user);
             session.getTransaction().commit();
             LOG.info("Пользователь: {} был добавлен в сессии: {}", user, session);
             session.close();
+            rsl = Optional.of(user);
         } catch (Exception e) {
             session.getTransaction().rollback();
             LOG.error("Ошибка добавления пользователя: {} в сессии: {}", user, session);
-            return Optional.empty();
         }
-        return Optional.of(user);
+        return rsl;
     }
 
     public Optional<User> findByLoginAndPassword(String login, String password) {
         Session session = sf.openSession();
+        Optional<User> rsl = Optional.empty();
         try {
-            User user = session.createQuery("FROM User WHERE login = :tLogin and password = :tPassword", User.class)
+            rsl = session.createQuery("FROM User WHERE login = :tLogin and password = :tPassword", User.class)
                     .setParameter("tLogin", login)
                     .setParameter("tPassword", password)
-                    .uniqueResult();
-            LOG.info("Пользователь: {} нашелся по логину: {} и паролю: {}", user, login, password);
-            return Optional.of(user);
+                    .uniqueResultOptional();
+            LOG.info("Пользователь: {} нашелся по логину: {} и паролю: {}", rsl.get(), login, password);
         } catch (Exception e) {
             LOG.error("Пользователь с логином: {} и паролем: {} не найден", login, password);
-            return Optional.empty();
         }
+        return rsl;
     }
-
 }
