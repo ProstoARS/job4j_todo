@@ -18,7 +18,7 @@ public class TaskService {
         return taskRepository.addTask(task);
     }
 
-    public Optional<Task> upgradeTask(Task task) {
+    public boolean upgradeTask(Task task) {
         return taskRepository.upgradeTask(task);
     }
 

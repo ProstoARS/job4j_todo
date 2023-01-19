@@ -88,8 +88,8 @@ public class TaskController {
 
     @PostMapping("/update")
     public String updateTask(@ModelAttribute Task task) {
-        Optional<Task> taskFromDb = taskService.upgradeTask(task);
-        if (taskFromDb.isEmpty()) {
+        boolean taskFromDb = taskService.upgradeTask(task);
+        if (!taskFromDb) {
             return "redirect:/tasks/fail";
         }
         return "redirect:/tasks/index";
