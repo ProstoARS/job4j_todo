@@ -8,4 +8,5 @@
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
     <include file="scripts/001_ddl_create_table_tasks.sql" relativeToChangelogFile="true"/>
     <include file="scripts/002_ddl_create_table_users.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/003_ddl_add_column_user_in_table_tasks.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
