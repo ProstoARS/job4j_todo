@@ -19,7 +19,8 @@ public class TaskRepository {
             SET name = :tName,
                 description = :tDescription,
                 created = :tCreated,
-                done = :tDone
+                done = :tDone,
+                user = :tUser
             WHERE id = :tId
             """;
     private static final String DELETE = "DELETE Task WHERE id = :fId";
@@ -43,6 +44,7 @@ public class TaskRepository {
                 "tDescription", task.getDescription(),
                 "tCreated", task.getCreated(),
                 "tDone", task.isDone(),
+                "tUser", task.getUser(),
                 "tId", task.getId()
         ));
     }

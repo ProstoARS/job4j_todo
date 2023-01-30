@@ -64,6 +64,7 @@
         </a>
         <span th:text="${task.name}"></span>
       <td th:text="${task.created}">
+      <td th:text="${task.user.name}">
       <td th:text="${task.done} ? 'Выполнена' : 'Новая'">
     </tbody>
   </table>

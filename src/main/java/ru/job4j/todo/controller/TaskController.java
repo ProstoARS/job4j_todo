@@ -33,7 +33,8 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String createTask(@ModelAttribute Task task) {
+    public String createTask(@ModelAttribute Task task, HttpSession session) {
+        task.setUser(SessionUser.getSessionUser(session));
         taskService.addTask(task);
         return "redirect:/tasks/index";
     }
@@ -87,7 +88,8 @@ public class TaskController {
     }
 
     @PostMapping("/update")
-    public String updateTask(@ModelAttribute Task task) {
+    public String updateTask(@ModelAttribute Task task, HttpSession session) {
+        task.setUser(SessionUser.getSessionUser(session));
         boolean taskFromDb = taskService.upgradeTask(task);
         if (!taskFromDb) {
             return "redirect:/tasks/fail";

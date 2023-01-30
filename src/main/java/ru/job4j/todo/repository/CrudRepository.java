@@ -48,7 +48,9 @@ public class CrudRepository {
             for (Map.Entry<String, Object> arg : args.entrySet()) {
                 sq.setParameter(arg.getKey(), arg.getValue());
             }
-            return Optional.ofNullable(sq.getSingleResult());
+            T singleResult = sq.getSingleResult();
+            LOG.info("Команда возвращает: {}", singleResult);
+            return Optional.ofNullable(singleResult);
         };
         return tx(command);
     }
@@ -94,9 +96,9 @@ public class CrudRepository {
         } catch (Exception e) {
             var tx = session.getTransaction();
             if (tx.isActive()) {
+                LOG.error("Ошибка команды: {}", command, e);
                 tx.rollback();
             }
-            LOG.error("Ошибка команды: {}", command, e);
             throw e;
         }
     }
