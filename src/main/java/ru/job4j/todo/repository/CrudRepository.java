@@ -48,9 +48,9 @@ public class CrudRepository {
             for (Map.Entry<String, Object> arg : args.entrySet()) {
                 sq.setParameter(arg.getKey(), arg.getValue());
             }
-            T singleResult = sq.getSingleResult();
-            LOG.info("Команда возвращает: {}", singleResult);
-            return Optional.ofNullable(singleResult);
+            Optional<T> uniqueResult = sq.uniqueResultOptional();
+            LOG.info("Команда возвращает: {}", uniqueResult);
+            return uniqueResult;
         };
         return tx(command);
     }
