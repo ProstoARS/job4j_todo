@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
 import ru.job4j.todo.util.SessionUser;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class TaskController {
 
     private final TaskService taskService;
+    private final PriorityService priorityService;
 
     @GetMapping("/index")
     public String index(Model model, HttpSession session) {
@@ -29,6 +31,7 @@ public class TaskController {
     public String addTask(Model model, HttpSession session) {
         model.addAttribute("user", SessionUser.getSessionUser(session));
         model.addAttribute("task", new Task());
+        model.addAttribute("priorities", priorityService.findAll());
         return "task/add";
     }
 
@@ -84,6 +87,7 @@ public class TaskController {
     public String editTask(@PathVariable("id") int id, Model model, HttpSession session) {
         model.addAttribute("user", SessionUser.getSessionUser(session));
         model.addAttribute("task", taskService.findById(id));
+        model.addAttribute("priorities", priorityService.findAll());
         return "task/update";
     }
 

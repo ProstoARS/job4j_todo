@@ -63,6 +63,13 @@
                             <textarea class="form-control" name="description" id="description"
                                       th:field="*{description}"></textarea>
                         </div>
+                        <div class="form-group">
+                            <label for="priority">Приоритет</label>
+                            <select class="form-control" id="priority" name="priority.id">
+                                <option th:each="priority : ${priorities}" th:value="${priority.id}"
+                                        th:text="${priority.name}"></option>
+                            </select>
+                        </div>
                         <div class="row pt-3"></div>
                             <button type="submit" class="btn btn-primary">Сохранить</button>
                     </div>

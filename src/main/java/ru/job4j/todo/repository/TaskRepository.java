@@ -20,12 +20,13 @@ public class TaskRepository {
                 description = :tDescription,
                 created = :tCreated,
                 done = :tDone,
-                user = :tUser
+                user = :tUser,
+                priority = :tPriority
             WHERE id = :tId
             """;
     private static final String DELETE = "DELETE Task WHERE id = :fId";
-    private static final String FIND_ALL = "FROM Task ORDER BY id";
-    private static final String FIND_CONDITION = "FROM Task WHERE done = :isDone";
+    private static final String FIND_ALL = "FROM Task f JOIN FETCH f.priority ORDER BY f.id";
+    private static final String FIND_CONDITION = "FROM Task f JOIN FETCH f.priority WHERE f.done = :isDone";
     private static final String FIND_BY_ID = "FROM Task WHERE id = :tId";
     private static final String EXECUTE = "UPDATE Task SET done = :tDone WHERE id = :tId";
     private static final Logger LOG = LogManager.getLogger(TaskRepository.class);
@@ -45,6 +46,7 @@ public class TaskRepository {
                 "tCreated", task.getCreated(),
                 "tDone", task.isDone(),
                 "tUser", task.getUser(),
+                "tPriority", task.getPriority(),
                 "tId", task.getId()
         ));
     }
