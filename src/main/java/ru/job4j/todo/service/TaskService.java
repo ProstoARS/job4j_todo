@@ -2,6 +2,7 @@ package ru.job4j.todo.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.repository.TaskRepository;
 
@@ -19,7 +20,8 @@ public class TaskService {
     }
 
     public boolean upgradeTask(Task task) {
-        return taskRepository.upgradeTask(task);
+        Optional<Priority> priority = Optional.ofNullable(task.getPriority());
+        return priority.isPresent() && taskRepository.upgradeTask(task);
     }
 
     public Boolean deleteTask(int id) {

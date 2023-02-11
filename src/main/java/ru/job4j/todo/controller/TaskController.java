@@ -100,8 +100,7 @@ public class TaskController {
     public String updateTask(@ModelAttribute Task task, HttpSession session) {
         task.setUser(SessionUser.getSessionUser(session));
         boolean taskFromDb = taskService.upgradeTask(task);
-        Optional<Priority> priority = Optional.ofNullable(task.getPriority());
-        if (!taskFromDb || priority.isEmpty()) {
+        if (!taskFromDb) {
             return "redirect:/tasks/fail";
         }
         return "redirect:/tasks/index";
