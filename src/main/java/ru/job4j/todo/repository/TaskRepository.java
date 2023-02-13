@@ -27,7 +27,7 @@ public class TaskRepository {
     private static final String DELETE = "DELETE Task WHERE id = :fId";
     private static final String FIND_ALL = "FROM Task f JOIN FETCH f.priority ORDER BY f.id";
     private static final String FIND_CONDITION = "FROM Task f JOIN FETCH f.priority WHERE f.done = :isDone";
-    private static final String FIND_BY_ID = "FROM Task WHERE id = :tId";
+    private static final String FIND_BY_ID = "FROM Task f JOIN FETCH f.priority  WHERE f.id = :tId";
     private static final String EXECUTE = "UPDATE Task SET done = :tDone WHERE id = :tId";
     private static final Logger LOG = LogManager.getLogger(TaskRepository.class);
 

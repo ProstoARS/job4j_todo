@@ -91,7 +91,7 @@ public class TaskController {
     @GetMapping("/edit/{id}")
     public String editTask(@PathVariable("id") int id, Model model, HttpSession session) {
         model.addAttribute("user", SessionUser.getSessionUser(session));
-        model.addAttribute("task", taskService.findById(id));
+        model.addAttribute("task", taskService.findById(id).get());
         model.addAttribute("priorities", priorityService.findAll());
         return "task/update";
     }

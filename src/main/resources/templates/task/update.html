@@ -67,8 +67,8 @@
                             <label for="priority">Приоритет</label>
                             <select class="form-control" id="priority" name="priority.id">
                                 <option th:each="p : ${priorities}" th:value="${p.id}"
-                                        th:text="${p.name}">
-<!--                                        th:selected="${p.id == task.priority.id}">-->
+                                        th:text="${p.name}"
+                                        th:selected="${p.id == task.priority.id}">
                                 </option>
                             </select>
                         </div>

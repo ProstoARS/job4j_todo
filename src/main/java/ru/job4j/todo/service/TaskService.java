@@ -13,14 +13,16 @@ import java.util.Optional;
 @Service
 public class TaskService {
 
+
     private final TaskRepository taskRepository;
+    private final PriorityService priorityService;
 
     public Optional<Task> addTask(Task task) {
         return taskRepository.addTask(task);
     }
 
     public boolean upgradeTask(Task task) {
-        Optional<Priority> priority = Optional.ofNullable(task.getPriority());
+        Optional<Priority> priority = priorityService.findById(task.getPriority().getId());
         return priority.isPresent() && taskRepository.upgradeTask(task);
     }
 
