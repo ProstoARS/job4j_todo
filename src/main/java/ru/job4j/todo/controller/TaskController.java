@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
 import ru.job4j.todo.util.SessionUser;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -20,6 +21,7 @@ public class TaskController {
 
     private final TaskService taskService;
     private final PriorityService priorityService;
+    private final CategoryService categoryService;
 
     @GetMapping("/index")
     public String index(Model model, HttpSession session) {
@@ -33,17 +35,18 @@ public class TaskController {
         model.addAttribute("user", SessionUser.getSessionUser(session));
         model.addAttribute("task", new Task());
         model.addAttribute("priorities", priorityService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
         return "task/add";
     }
 
     @PostMapping("/create")
-    public String createTask(@ModelAttribute Task task, HttpSession session) {
+    public String createTask(@ModelAttribute Task task,
+                             @RequestParam(name = "categoriesId", required = false) List<Integer> categoryIdList, HttpSession session) {
         task.setUser(SessionUser.getSessionUser(session));
-        Optional<Priority> priority = Optional.ofNullable(task.getPriority());
-        if (priority.isEmpty()) {
+        taskService.addOrChangeCategory(task, categoryService.findCategoriesById(categoryIdList));
+        if (!taskService.addTask(task)) {
             return "redirect:/tasks/fail";
         }
-        taskService.addTask(task);
         return "redirect:/tasks/index";
     }
 
@@ -93,11 +96,14 @@ public class TaskController {
         model.addAttribute("user", SessionUser.getSessionUser(session));
         model.addAttribute("task", taskService.findById(id).get());
         model.addAttribute("priorities", priorityService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
         return "task/update";
     }
 
     @PostMapping("/update")
-    public String updateTask(@ModelAttribute Task task, HttpSession session) {
+    public String updateTask(@ModelAttribute Task task,
+                             @RequestParam(name = "categoriesId", required = false) List<Integer> categoryIdList,
+                             HttpSession session) {
         task.setUser(SessionUser.getSessionUser(session));
         boolean taskFromDb = taskService.upgradeTask(task);
         if (!taskFromDb) {

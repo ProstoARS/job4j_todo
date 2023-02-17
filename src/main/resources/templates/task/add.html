@@ -65,6 +65,12 @@
                         <option th:each="priority : ${priorities}" th:value="${priority.id}" th:text="${priority.name}"></option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="category">Категория</label>
+                    <select class="form-control" id="category" name="categoriesId" multiple="multiple" size="3">
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                    </select>
+                </div>
                 <button type="submit" class="btn btn-primary">Сохранить</button>
             </div>
         </form>

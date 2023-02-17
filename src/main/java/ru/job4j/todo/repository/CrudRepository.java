@@ -69,6 +69,7 @@ public class CrudRepository {
             for (Map.Entry<String, Object> arg : args.entrySet()) {
                 sq.setParameter(arg.getKey(), arg.getValue());
             }
+            LOG.info("Коллекция из дб: {}", sq.list().toString());
             return sq.list();
         };
         return tx(command);

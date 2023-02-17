@@ -3,6 +3,8 @@ package ru.job4j.todo.model;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,10 +26,16 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "priority_id")
+    @ToString.Exclude
     private Priority priority;
 
-    public Task(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "category_task",
+            joinColumns = { @JoinColumn(name = "task_id") },
+            inverseJoinColumns = { @JoinColumn(name = "category_id") }
+    )
+    @ToString.Exclude
+    private List<Category> categoryList = new ArrayList<>();
+
 }

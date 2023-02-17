@@ -13,4 +13,7 @@
     <include file="scripts/005_dml_insert_into_priorities.sql" relativeToChangelogFile="true"/>
     <include file="scripts/006_ddl_add_column_priorities_in_table_tasks.sql" relativeToChangelogFile="true"/>
     <include file="scripts/007_dml_update_column_priority_in_tasks.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/008_ddl_create_table_categories.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/009_ddl_create_table_category_task.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/010_dml_insert_into_categories.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
