@@ -55,6 +55,7 @@
       <th scope="col">Добавил</th>
       <th scope="col">Статус</th>
       <th scope="col">Приоритет</th>
+      <th scope="col">Категория</th>
     </tr>
     </thead>
     <tbody>
@@ -69,6 +70,9 @@
       <td th:text="${task.user.name}">
       <td th:text="${task.done} ? 'Выполнена' : 'Новая'">
       <td th:text="${task.priority.name}">
+      <td th:each="category : ${task.categoryList}">
+        <span th:text="${category.name}"></span>
+      </td>
     </tbody>
   </table>
 </div>

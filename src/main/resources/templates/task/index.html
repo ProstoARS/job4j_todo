@@ -72,9 +72,9 @@
             <td th:text="${task.user.name}">
             <td th:text="${task.done} ? 'Выполнена' : 'Новая'">
             <td th:text="${task.priority.name}">
-        <td th:each="category : ${task.categoryList}">
-            <span th:text="${category.name}"></span>
-        </td>
+            <td th:each="category : ${task.categoryList}">
+                <span th:text="${category.name}"></span>
+            </td>
         </tbody>
     </table>
 </div>

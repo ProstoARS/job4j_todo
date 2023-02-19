@@ -14,16 +14,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class TaskRepository {
 
-    private static final String UPDATE = """
-            UPDATE Task
-            SET name = :tName,
-                description = :tDescription,
-                created = :tCreated,
-                done = :tDone,
-                user = :tUser,
-                priority = :tPriority
-            WHERE id = :tId
-            """;
     private static final String DELETE = "DELETE Task WHERE id = :fId";
     private static final String FIND_ALL = "FROM Task f JOIN FETCH f.priority ORDER BY f.id";
     private static final String FIND_CONDITION = "FROM Task f JOIN FETCH f.priority WHERE f.done = :isDone";
@@ -38,17 +28,10 @@ public class TaskRepository {
         return Optional.of(task);
     }
 
-    public boolean upgradeTask(Task task) {
+    public Optional<Task> upgradeTask(Task task) {
         LOG.info("Задача: {} подготовлена к изменению", task);
-        return crudRepository.query(UPDATE, Map.of(
-                "tName", task.getName(),
-                "tDescription", task.getDescription(),
-                "tCreated", task.getCreated(),
-                "tDone", task.isDone(),
-                "tUser", task.getUser(),
-                "tPriority", task.getPriority(),
-                "tId", task.getId()
-        ));
+        crudRepository.run(session -> session.merge(task));
+        return Optional.of(task);
     }
 
     public boolean deleteTask(int id) {

@@ -1,13 +1,10 @@
 package ru.job4j.todo.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -24,5 +21,6 @@ public class Category {
 
     @ManyToMany(mappedBy = "categoryList", fetch = FetchType.EAGER)
     @ToString.Exclude
-    private Set<Task> tasks = new HashSet<>();
+    @EqualsAndHashCode.Exclude
+    private List<Task> tasks = new ArrayList<>();
 }

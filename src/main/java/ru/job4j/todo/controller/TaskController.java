@@ -43,9 +43,9 @@ public class TaskController {
     public String createTask(@ModelAttribute Task task,
                              @RequestParam(name = "categoriesId", required = false) List<Integer> categoryIdList, HttpSession session) {
         task.setUser(SessionUser.getSessionUser(session));
-        taskService.addOrChangeCategory(task, categoryService.findCategoriesById(categoryIdList));
-        if (!taskService.addTask(task)) {
-            return "redirect:/tasks/fail";
+        boolean checkAndAddCategory = taskService.addOrChangeCategory(task, categoryService.findCategoriesById(categoryIdList));
+        if (!checkAndAddCategory || !taskService.addTask(task)) {
+            return "redirect:/tasks/error";
         }
         return "redirect:/tasks/index";
     }
@@ -55,7 +55,7 @@ public class TaskController {
         model.addAttribute("user", SessionUser.getSessionUser(session));
         Optional<Task> task = taskService.findById(id);
         if (task.isEmpty()) {
-            return "redirect:/tasks/fail";
+            return "redirect:/tasks/error";
         }
         model.addAttribute("task", task.get());
         return "task/description";
@@ -78,7 +78,7 @@ public class TaskController {
     @PostMapping("/execute/{id}")
     public String executeTask(@PathVariable("id") int id) {
         if (!taskService.executeTask(id)) {
-            return "redirect:/tasks/fail";
+            return "redirect:/tasks/error";
         }
         return "redirect:/tasks/index";
     }
@@ -86,7 +86,7 @@ public class TaskController {
     @PostMapping("/delete/{id}")
     public String deleteTask(@PathVariable("id") int id) {
         if (!taskService.deleteTask(id)) {
-            return "redirect:/tasks/fail";
+            return "redirect:/tasks/error";
         }
         return "redirect:/tasks/index";
     }
@@ -105,10 +105,16 @@ public class TaskController {
                              @RequestParam(name = "categoriesId", required = false) List<Integer> categoryIdList,
                              HttpSession session) {
         task.setUser(SessionUser.getSessionUser(session));
-        boolean taskFromDb = taskService.upgradeTask(task);
-        if (!taskFromDb) {
-            return "redirect:/tasks/fail";
+        boolean checkAndAddCategory = taskService.addOrChangeCategory(task, categoryService.findCategoriesById(categoryIdList));
+        if (!checkAndAddCategory || !taskService.upgradeTask(task)) {
+            return "redirect:/tasks/error";
         }
         return "redirect:/tasks/index";
+    }
+
+    @GetMapping("/error")
+    public String fail(Model model, HttpSession session) {
+        model.addAttribute("user", SessionUser.getSessionUser(session));
+        return "task/fail";
     }
 }
