@@ -50,11 +50,6 @@ public class TaskService {
     }
 
     public boolean addOrChangeCategory(Task task, List<Category> categories) {
-        for (Category rsl : categories) {
-            if (rsl == null) {
-                return false;
-            }
-        }
         task.getCategoryList().addAll(categories);
         categories.forEach(category -> category.getTasks().add(task));
         return true;

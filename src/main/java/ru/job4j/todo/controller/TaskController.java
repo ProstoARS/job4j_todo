@@ -41,9 +41,11 @@ public class TaskController {
 
     @PostMapping("/create")
     public String createTask(@ModelAttribute Task task,
-                             @RequestParam(name = "categoriesId", required = false) List<Integer> categoryIdList, HttpSession session) {
+                             @RequestParam(name = "categoriesId", required = false) List<Integer> categoryIdList,
+                             HttpSession session) {
         task.setUser(SessionUser.getSessionUser(session));
-        boolean checkAndAddCategory = taskService.addOrChangeCategory(task, categoryService.findCategoriesById(categoryIdList));
+        boolean checkAndAddCategory = taskService.addOrChangeCategory(task,
+                categoryService.findCategoriesById(categoryIdList));
         if (!checkAndAddCategory || !taskService.addTask(task)) {
             return "redirect:/tasks/error";
         }
@@ -105,7 +107,8 @@ public class TaskController {
                              @RequestParam(name = "categoriesId", required = false) List<Integer> categoryIdList,
                              HttpSession session) {
         task.setUser(SessionUser.getSessionUser(session));
-        boolean checkAndAddCategory = taskService.addOrChangeCategory(task, categoryService.findCategoriesById(categoryIdList));
+        boolean checkAndAddCategory = taskService.addOrChangeCategory(task,
+                categoryService.findCategoriesById(categoryIdList));
         if (!checkAndAddCategory || !taskService.upgradeTask(task)) {
             return "redirect:/tasks/error";
         }
