@@ -23,8 +23,12 @@ public class UserRepository {
     private final CrudRepository crudRepository;
 
     public Optional<User> addUser(User user) {
-        crudRepository.run(session -> session.persist(user));
-        return Optional.of(user);
+        try {
+            crudRepository.run(session -> session.persist(user));
+            return Optional.of(user);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<User> findByLoginAndPassword(String login, String password) {

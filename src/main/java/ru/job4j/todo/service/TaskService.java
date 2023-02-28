@@ -6,8 +6,11 @@ import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.repository.TaskRepository;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -29,16 +32,23 @@ public class TaskService {
         return taskRepository.deleteTask(id);
     }
 
-    public List<Task> findAll() {
-        return taskRepository.findAll();
+    public List<Task> findAll(ZoneId zoneId) {
+        return taskRepository.findAll()
+                .stream()
+                .peek(task -> changeTaskTimeZone(task, zoneId))
+                .collect(Collectors.toList());
     }
 
-    public List<Task> findConditionTasks(Boolean check) {
-        return taskRepository.findConditionTasks(check);
+    public List<Task> findConditionTasks(Boolean check, ZoneId zoneId) {
+        return taskRepository.findConditionTasks(check)
+                .stream()
+                .peek(task -> changeTaskTimeZone(task, zoneId))
+                .collect(Collectors.toList());
     }
 
-    public Optional<Task> findById(int id) {
-        return taskRepository.findById(id);
+    public Optional<Task> findById(int id, ZoneId zoneId) {
+        Optional<Task> byId = taskRepository.findById(id);
+        return byId.map(task -> changeTaskTimeZone(task, zoneId));
     }
 
     public boolean executeTask(int id) {
@@ -53,6 +63,13 @@ public class TaskService {
         task.getCategoryList().addAll(categories);
         categories.forEach(category -> category.getTasks().add(task));
         return true;
+    }
+
+    public Task changeTaskTimeZone(Task task, ZoneId zoneId) {
+        LocalDateTime createdWithTimeZone = task.getCreated().atZone(ZoneId.of("Europe/Moscow"))
+                .withZoneSameInstant(zoneId).toLocalDateTime();
+        task.setCreated(createdWithTimeZone);
+        return task;
     }
 
 }

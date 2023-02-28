@@ -24,14 +24,22 @@ public class TaskRepository {
     private final CrudRepository crudRepository;
 
     public Optional<Task> addTask(Task task) {
-        crudRepository.run(session -> session.persist(task));
-        return Optional.of(task);
+        try {
+            crudRepository.run(session -> session.persist(task));
+            return Optional.of(task);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<Task> upgradeTask(Task task) {
         LOG.info("Задача: {} подготовлена к изменению", task);
-        crudRepository.run(session -> session.merge(task));
-        return Optional.of(task);
+        try {
+            crudRepository.run(session -> session.merge(task));
+            return Optional.of(task);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     public boolean deleteTask(int id) {

@@ -13,6 +13,7 @@ import ru.job4j.todo.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @AllArgsConstructor
 @Controller
@@ -23,6 +24,8 @@ public class UserController {
     @GetMapping("/formRegistration")
     public String formRegistration(Model model, @RequestParam(name = "fail", required = false) Boolean fail) {
         model.addAttribute("fail", fail != null);
+        model.addAttribute("timeZonesIDs", TimeZone.getAvailableIDs());
+        model.addAttribute("defaultTZ", TimeZone.getDefault().getID());
         return "/registration";
     }
 

@@ -5,12 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
 import ru.job4j.todo.util.SessionUser;
 
 import javax.servlet.http.HttpSession;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +27,10 @@ public class TaskController {
 
     @GetMapping("/index")
     public String index(Model model, HttpSession session) {
-        model.addAttribute("user", SessionUser.getSessionUser(session));
-        model.addAttribute("tasks", taskService.findAll());
+        User sessionUser = SessionUser.getSessionUser(session);
+        String timeZone = sessionUser.getTimeZone();
+        model.addAttribute("user", sessionUser);
+        model.addAttribute("tasks", taskService.findAll(ZoneId.of(timeZone)));
         return "task/index";
     }
 
@@ -54,8 +58,10 @@ public class TaskController {
 
     @GetMapping("/description/{id}")
     public String descriptionTask(Model model, @PathVariable("id") int id, HttpSession session) {
-        model.addAttribute("user", SessionUser.getSessionUser(session));
-        Optional<Task> task = taskService.findById(id);
+        User sessionUser = SessionUser.getSessionUser(session);
+        String timeZone = sessionUser.getTimeZone();
+        model.addAttribute("user", sessionUser);
+        Optional<Task> task = taskService.findById(id, ZoneId.of(timeZone));
         if (task.isEmpty()) {
             return "redirect:/tasks/error";
         }
@@ -65,15 +71,19 @@ public class TaskController {
 
     @GetMapping("/allNew")
     public String newTasks(Model model, HttpSession session) {
-        model.addAttribute("user", SessionUser.getSessionUser(session));
-        model.addAttribute("newTasks", taskService.findConditionTasks(false));
+        User sessionUser = SessionUser.getSessionUser(session);
+        String timeZone = sessionUser.getTimeZone();
+        model.addAttribute("user", sessionUser);
+        model.addAttribute("newTasks", taskService.findConditionTasks(false, ZoneId.of(timeZone)));
         return "task/newList";
     }
 
     @GetMapping("/allDone")
     public String doneTasks(Model model, HttpSession session) {
-        model.addAttribute("user", SessionUser.getSessionUser(session));
-        model.addAttribute("doneTasks", taskService.findConditionTasks(true));
+        User sessionUser = SessionUser.getSessionUser(session);
+        String timeZone = sessionUser.getTimeZone();
+        model.addAttribute("user", sessionUser);
+        model.addAttribute("doneTasks", taskService.findConditionTasks(true, ZoneId.of(timeZone)));
         return "task/doneList";
     }
 
@@ -95,8 +105,10 @@ public class TaskController {
 
     @GetMapping("/edit/{id}")
     public String editTask(@PathVariable("id") int id, Model model, HttpSession session) {
-        model.addAttribute("user", SessionUser.getSessionUser(session));
-        model.addAttribute("task", taskService.findById(id).get());
+        User sessionUser = SessionUser.getSessionUser(session);
+        String timeZone = sessionUser.getTimeZone();
+        model.addAttribute("user", sessionUser);
+        model.addAttribute("task", taskService.findById(id, ZoneId.of(timeZone)).get());
         model.addAttribute("priorities", priorityService.findAll());
         model.addAttribute("categories", categoryService.findAll());
         return "task/update";
