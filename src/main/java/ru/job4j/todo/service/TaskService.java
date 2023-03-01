@@ -1,6 +1,8 @@
 package ru.job4j.todo.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Task;
@@ -12,11 +14,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
+@PropertySource("classpath:application.properties")
 public class TaskService {
 
-
+    @Value("${defaultTimeZone}")
+    private String defaultTimeZone;
     private final TaskRepository taskRepository;
     private final PriorityService priorityService;
 
@@ -66,7 +70,7 @@ public class TaskService {
     }
 
     public Task changeTaskTimeZone(Task task, ZoneId zoneId) {
-        LocalDateTime createdWithTimeZone = task.getCreated().atZone(ZoneId.of("Europe/Moscow"))
+        LocalDateTime createdWithTimeZone = task.getCreated().atZone(ZoneId.of(defaultTimeZone))
                 .withZoneSameInstant(zoneId).toLocalDateTime();
         task.setCreated(createdWithTimeZone);
         return task;
